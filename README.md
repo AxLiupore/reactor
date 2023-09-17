@@ -32,7 +32,7 @@
 
 ### ChannelMap
 
-![channel](https://github.com/AxLiupore/reactor/blob/master/images/channelmap.jpg)
+![channelmap](https://github.com/AxLiupore/reactor/blob/master/images/channelmap.jpg)
 
 里面存储的就是一个对应关系，每个文件描述符都对应一个 Channel，基于一个文件描述符就可以找到对应的 Channel 的实例
 
@@ -45,9 +45,24 @@
 
 ### Dispatcher
 
+![dispatcher](https://github.com/AxLiupore/reactor/blob/master/images/dispatcher.jpg)
+
 I/O 多路复用的模型，这里有三种模型可以选择：epoll、poll、select，这三个是三选一，不是同时使用，通过 Dispatcher 检测是一些系列的事件，将对应的事件注册到了反应堆，当有时间发生之后，就会调用相关的处理动作：回调函数
 
+这相当于中央处理器，用于控制事件的处理
+
+在这个模块里有 6 个主要的函数：
+
+1. `init` ：用于初始化 IO 多路复用的模型，3 种：selcet、epoll、poll，不管是哪个模型都需要用到多种数据块，在这里面就是用来初始化这些数据块
+2. `add`：将待检测的文件描述符添加到 select、epoll、poll 节点上面
+3. `remove`：将文件描述符从节点上删除
+4. `modify`：修改文件描述符在节点上
+5. `dispatch`：对发生的事件进行检测，看是哪个 IO 复用模型上的事件需要检测，就对那个节点进行处理
+6. `clear`：将`dispatcher`从`EventLoop`上删除
+
 ### EventLoop
+
+![eventloop](https://github.com/AxLiupore/reactor/blob/master/images/eventloop.jpg)
 
 事件循环，当服务器启动之后，会有不停的事件触发，事件包括：客户端的新连接、已经建立连接的客户端和服务器之间的通信
 
