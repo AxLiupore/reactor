@@ -3,6 +3,8 @@
 
 #include "dispatcher.h"
 
+extern struct dispatcher epoll_dispatcher; // 使用其他源文件里面的全局变量
+
 struct event_loop
 {
 	struct dispatcher* dispatcher;

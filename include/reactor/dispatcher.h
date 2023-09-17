@@ -1,6 +1,9 @@
 #ifndef REACTOR_DISPATCHER_H
 #define REACTOR_DISPATCHER_H
 
+#include <stdlib.h>
+#include <sys/epoll.h>
+#include <unistd.h>
 #include "channel.h"
 #include "event_loop.h"
 

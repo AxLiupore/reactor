@@ -60,6 +60,8 @@ I/O 多路复用的模型，这里有三种模型可以选择：epoll、poll、s
 5. `dispatch`：对发生的事件进行检测，看是哪个 IO 复用模型上的事件需要检测，就对那个节点进行处理
 6. `clear`：将`dispatcher`从`EventLoop`上删除
 
+
+
 ### EventLoop
 
 ![eventloop](https://github.com/AxLiupore/reactor/blob/master/images/eventloop.jpg)
