@@ -117,7 +117,7 @@ static int dispatch_epoll(struct event_loop* eventLoop, int timeout)
 	else if (count == 0)
 	{
 		perror("epoll_wait timeout");
-		exit(0);
+		return -1;
 	}
 	else
 	{

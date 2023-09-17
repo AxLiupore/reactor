@@ -136,7 +136,7 @@ int dispatch_poll(struct event_loop* eventLoop, int timeout)
 	else if (count == 0)
 	{
 		perror("poll timeout");
-		exit(0);
+		return -1;
 	}
 	else
 	{
