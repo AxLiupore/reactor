@@ -12,4 +12,5 @@ add_executable(reactor main.cpp
         include/reactor/event_loop.h
         src/reactor/event_loop.c
         src/reactor/epoll_dispatcher.c
+        src/reactor/poll_dispatcher.c
 )

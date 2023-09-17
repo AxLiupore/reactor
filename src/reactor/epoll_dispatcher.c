@@ -1,6 +1,7 @@
+#include <sys/epoll.h>
 #include "../../include/reactor/dispatcher.h"
 
-const int MAX_EVENTS = 520;
+#define EPOLL_MAX_EVENTS 1024
 
 // 这个就是一个epoll树
 struct data_epoll
@@ -44,7 +45,7 @@ static void* init_epoll()
 		perror("epoll_create");
 		exit(0);
 	}
-	data->events = (struct epoll_event*)calloc(MAX_EVENTS, sizeof(struct epoll_event));
+	data->events = (struct epoll_event*)calloc(EPOLL_MAX_EVENTS, sizeof(struct epoll_event));
 	return data;
 }
 
@@ -107,7 +108,7 @@ static int dispatch_epoll(struct event_loop* eventLoop, int timeout)
 {
 	struct data_epoll* data = (struct data_epoll*)eventLoop->dispatcher_data;
 	// count: -1 错误, 0 超时, >0 事件发生的个数
-	int count = epoll_wait(data->fd_epoll, data->events, MAX_EVENTS, timeout * 1000);
+	int count = epoll_wait(data->fd_epoll, data->events, EPOLL_MAX_EVENTS, timeout * 1000);
 	if (count == -1)
 	{
 		perror("epoll_wait error");
@@ -149,6 +150,7 @@ static int clear_epoll(struct event_loop* eventLoop)
 	free(data->events);
 	close(data->fd_epoll);
 	free(data);
+	return 0;
 }
 
 
