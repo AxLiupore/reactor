@@ -4,7 +4,7 @@
 
 ## 概览
 
-![overview]()
+![overview](https://github.com/AxLiupore/reactor/blob/master/images/overview.jpg)
 
 ## 反应堆模型
 
@@ -15,6 +15,8 @@
 监听器，这里有用于监听的端口和用于监听的文件描述符
 
 ### Channel
+
+![channel](https://github.com/AxLiupore/reactor/blob/master/images/channel.jpg)
 
 通道，将用于监听和通信的文件描述符进行封装，对应的就是一个通道，一个服务器需要接受客户端的连接需要一个文件描述符，所有的客户端发送的连接都需要通过这个文件描述符进行连接，每个客户端都对应一个文件描述符
 
@@ -30,7 +32,16 @@
 
 ### ChannelMap
 
+![channel](https://github.com/AxLiupore/reactor/blob/master/images/channelmap.jpg)
+
 里面存储的就是一个对应关系，每个文件描述符都对应一个 Channel，基于一个文件描述符就可以找到对应的 Channel 的实例
+
+这里主要是用空间来换时间，通过数组的下标来快速找到要处理的 Channel
+
+1. 创建一个结构体用于映射，有两个成员变量：`size`和`list` ，前者是存储指针指向的数组的元素总个数，后者是存储`channel`的数组
+1. 初始化一个 channel_map，要初始化数组元素的大小和这个数组元素的地址
+1. 清空 channel_map，因为指针指向的是堆内存，所以需要清空对应数组里面的资源，在这里需要释放两部分资源：`list`所指向的数组元素里面的的地址要释放、`list`所直线的地址要释放
+1. 给 channel_map 重新分配空间，只有当前 channel_map 的大小小于指定的大小，才需要重新分配；这里指定一个分配规则：每次扩容前面的 2 倍，通过 realloc 函数将数组大小扩容，因为这里可能会重新分配内存导致`list`指向的地址发生改变，所以需要改变`list`的指向，在初始化完成之后，需要将新开辟的数组里面的元素内容初始化为 0，然后更新数组的大小
 
 ### Dispatcher
 

@@ -5,4 +5,6 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(reactor main.cpp
         include/reactor/channel.h
-        src/reactor/channel.c)
+        src/reactor/channel.c
+        include/reactor/channel_map.h
+        src/reactor/channel_map.c)

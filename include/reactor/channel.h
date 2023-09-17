@@ -16,7 +16,7 @@ enum FD_EVENT
 	WRITE_EVENT = 0x04
 };
 
-struct Channel
+struct channel
 {
 	int fd; // 文件描述符
 	int events; // 事件：r、w、rw
@@ -26,13 +26,13 @@ struct Channel
 	void* arg; // 回调函数的参数
 };
 
-// 初始化一个Channel
-struct Channel* init_channel(int fd, int events, handleFunc readFunc, handleFunc writeFunc, void* arg);
+// 初始化一个channel
+struct channel* init_channel(int fd, int events, handleFunc readFunc, handleFunc writeFunc, void* arg);
 
 // 修改fd的写事件（检测or不检测）
-void write_event_enable(struct Channel* channel, bool flag);
+void write_event_enable(struct channel* channel, bool flag);
 
 // 判断是否需要检测文件描述符的写事件
-bool check_write_event_enable(struct Channel* channel);
+bool check_write_event_enable(struct channel* channel);
 
 #endif

@@ -1,8 +1,8 @@
 #include "../../include/reactor/channel.h"
 
-struct Channel* init_channel(int fd, int events, handleFunc readFunc, handleFunc writeFunc, void* arg)
+struct channel* init_channel(int fd, int events, handleFunc readFunc, handleFunc writeFunc, void* arg)
 {
-	struct Channel* channel = (struct Channel*)malloc(sizeof(struct Channel));
+	struct channel* channel = (struct channel*)malloc(sizeof(struct channel));
 	channel->fd = fd;
 	channel->events = events;
 	channel->readCallBack = readFunc;
@@ -11,7 +11,7 @@ struct Channel* init_channel(int fd, int events, handleFunc readFunc, handleFunc
 	return channel;
 }
 
-void write_event_enable(struct Channel* channel, bool flag)
+void write_event_enable(struct channel* channel, bool flag)
 {
 	if (flag)
 	{
@@ -23,7 +23,7 @@ void write_event_enable(struct Channel* channel, bool flag)
 	}
 }
 
-bool check_write_event_enable(struct Channel* channel)
+bool check_write_event_enable(struct channel* channel)
 {
 	return channel->events & WRITE_EVENT;
 }
