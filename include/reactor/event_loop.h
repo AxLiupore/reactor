@@ -52,4 +52,8 @@ int start_event_loop(struct event_loop* eventLoop);
 // 处理激活的文件描述符
 int active_event(struct event_loop* eventLoop, int fd, int event);
 
+//添加任务到任务队列
+int add_task_event_loop(struct event_loop* eventLoop, struct channel* channel, enum ELEMENT_TYPE type);
+
+
 #endif

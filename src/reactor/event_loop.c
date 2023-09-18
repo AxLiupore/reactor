@@ -58,9 +58,42 @@ int active_event(struct event_loop* eventLoop, int fd, int event)
 	{
 		channel->readCallBack(channel->arg);
 	}
-	if (event & WRITE_EVENT &&  channel->writeCallBack != NULL)
+	if (event & WRITE_EVENT && channel->writeCallBack != NULL)
 	{
 		channel->writeCallBack(channel->arg);
+	}
+	return 0;
+}
+
+//添加任务到任务队列
+int add_task_event_loop(struct event_loop* eventLoop, struct channel* channel, enum ELEMENT_TYPE type)
+{
+	// 加锁，保护共享资源
+	pthread_mutex_lock(&eventLoop->mutex);
+	// 创建新节点
+	struct channel_element* node = (struct channel_element*)malloc(sizeof(struct channel_element));
+	node->channel = channel;
+	node->type = type;
+	node->next = NULL;
+	// 链表为空
+	if (eventLoop->head == NULL)
+	{
+		eventLoop->head = eventLoop->tail = node;
+	}
+	else
+	{
+		eventLoop->tail->next = node;
+		eventLoop->tail = node;
+	}
+	pthread_mutex_unlock(&eventLoop->mutex);
+	// 处理节点
+	if (eventLoop->thread_id == pthread_self())
+	{
+		// 当前子线程
+	}
+	else
+	{
+		// 主线程 -- 告诉子线程处理任务队列中的任务
 	}
 	return 0;
 }
