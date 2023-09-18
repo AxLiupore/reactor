@@ -49,7 +49,7 @@
 
 I/O 多路复用的模型，这里有三种模型可以选择：epoll、poll、select，这三个是三选一，不是同时使用，通过 Dispatcher 检测是一些系列的事件，将对应的事件注册到了反应堆，当有时间发生之后，就会调用相关的处理动作：回调函数
 
-这相当于中央处理器，用于控制事件的处理
+这相当于中央处理器，用于控制事件的处理，事件分发模型，检测对应的文件描述符的事件
 
 在这个模块里有 6 个主要的函数：
 
@@ -66,9 +66,32 @@ I/O 多路复用的模型，这里有三种模型可以选择：epoll、poll、s
 
 ![eventloop](https://github.com/AxLiupore/reactor/blob/master/images/eventloop.jpg)
 
-事件循环，当服务器启动之后，会有不停的事件触发，事件包括：客户端的新连接、已经建立连接的客户端和服务器之间的通信
+事件循环，当服务器启动之后，会有不停的事件触发，事件包括：客户端的新连接、已经建立连接的客户端和服务器之间的通信，一个 EventLoop 就对应一个反应堆模型
+
+#### Dispatcher
 
 可以通过这个向 Dispatcher 进行添加事件，就是事件对应的文件描述符原来不在 Dispatcher 上，把文件描述符添加到了这个上面，待检测的节点就多了一个；还有就是 Dispatcher 上的节点已经和客户端断开了连接，就不需要再次对他进行检测了，因此就需要将这个节点从 Dispatcher 上删除
+
+#### TaskQueue
+
+![eventloop](https://github.com/AxLiupore/reactor/blob/master/images/taskqueue.jpg)
+
+- 里面有一个 TaskQueue，用于处理要处理的任务，里面存储的是 Channel*，如果是添加事件的节点就加到 Dispatcher 对应的检测集合中，如果是删除的就从 Dispatcher 上删除
+
+- 这里用到了生产者、消费者模型，消费者：Dispatcher，生产者：其他的线程（主线程和客户端建立了连接，就需要通信）
+- 用到了链表，链表的节点是 ChannelElement 类型，这是一个结构体，有三个成员：`type`、`Channel`、`next`，根据`type`对`Channel`进行操作
+
+#### ChannelMap
+
+有一个 ChannelMap，基于数组实现的，通过这个就可以通过文件描述符找到对应的 Channel
+
+#### Others
+
+还有一些其他数据：ThreadID、ThreadName、ThreadMutex、ThreadCondition
+- ThraedID：因为在当前的服务器里面有多个 EventLoop，每个 EventLoop 都属于一个线程，这个 ThreadID 就是记录那个子线程的线程 ID
+- ThreadName：子线程的名称
+- ThreadMutex：互斥锁，保护的是任务的队列，因为这个任务队列会被多个线程操作
+- ThreadCondition：条件变量
 
 ## 多线程
 

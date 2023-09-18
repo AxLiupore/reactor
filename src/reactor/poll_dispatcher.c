@@ -1,5 +1,6 @@
 #include <sys/poll.h>
 #include "../../include/reactor/dispatcher.h"
+#include "../../include/reactor/event_loop.h"
 
 #define POLL_MAX_EVENTS 1024
 
