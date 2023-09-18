@@ -3,6 +3,7 @@
 
 #include <pthread.h>
 #include <assert.h>
+#include <sys/socket.h>
 #include "dispatcher.h"
 #include "channel_map.h"
 
@@ -38,6 +39,7 @@ struct event_loop
 	pthread_t thread_id; // 属于的那个线程的id
 	char thread_name[32];
 	pthread_mutex_t mutex; // 这个event_loop的互斥锁
+	int socketPair[2]; // 存储本地通信的fd通过socketpair初始化
 };
 
 // 初始化：自线程
@@ -54,6 +56,5 @@ int active_event(struct event_loop* eventLoop, int fd, int event);
 
 //添加任务到任务队列
 int add_task_event_loop(struct event_loop* eventLoop, struct channel* channel, enum ELEMENT_TYPE type);
-
 
 #endif

@@ -8,6 +8,22 @@ struct event_loop* init_event_loop()
 	return init_self_event_loop(NULL);
 }
 
+// 写数据
+void write_local_message(struct event_loop* eventLoop)
+{
+	const char* message = "AxLiu love Xiaoyu forever";
+	write(eventLoop->socketPair[0], message, strlen(message));
+}
+
+// 读数据：接受socketpair[0]发送过来的数据
+int read_local_message(void* arg)
+{
+	struct event_loop* eventLoop = (struct event_loop*)arg;
+	char buf[256];
+	read(eventLoop->socketPair[1], buf, sizeof(buf));
+	return 0;
+}
+
 // 子线程
 struct event_loop* init_self_event_loop(const char* threadName)
 {
@@ -21,6 +37,16 @@ struct event_loop* init_self_event_loop(const char* threadName)
 	eventLoop->head = NULL;
 	eventLoop->tail = NULL;
 	eventLoop->channel_map = init_channel_map(INIT_CHANNEL_MAP_SIZE);
+	int ret = socketpair(AF_UNIX, SOCK_STREAM, 0, eventLoop->socketPair);
+	if (ret == -1)
+	{
+		perror("socketpair");
+		exit(0);
+	}
+	// 制定规则：eventLoop->socketpair[0]发送数据，eventLoop->socketpair[1]接受数据
+	struct channel* channel = init_channel(eventLoop->socketPair[1], READ_EVENT, read_local_message, NULL, eventLoop);
+	// channel添加到任务队列中
+	add_task_event_loop(eventLoop, channel, ADD);
 	return eventLoop;
 }
 
@@ -94,6 +120,7 @@ int add_task_event_loop(struct event_loop* eventLoop, struct channel* channel, e
 	else
 	{
 		// 主线程 -- 告诉子线程处理任务队列中的任务
+		write_local_message(eventLoop);
 	}
 	return 0;
 }
