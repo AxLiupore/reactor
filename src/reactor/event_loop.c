@@ -23,3 +23,22 @@ struct event_loop* init_self_event_loop(const char* threadName)
 	eventLoop->channel_map = init_channel_map(INIT_CHANNEL_MAP_SIZE);
 	return eventLoop;
 }
+
+// 启动反应堆模型
+int start_event_loop(struct event_loop* eventLoop)
+{
+	assert(eventLoop != NULL);
+	// 取出事件分发器和检测模型
+	struct dispatcher* dispatcher = eventLoop->dispatcher;
+	//比较线程ID是否正常
+	if (eventLoop->thread_id != pthread_self())
+	{
+		return -1;
+	}
+	// 循环进行事件处理
+	while (!eventLoop->state)
+	{
+		dispatcher->dispatch(eventLoop, 2); // 超时2s
+	}
+	return 0;
+}

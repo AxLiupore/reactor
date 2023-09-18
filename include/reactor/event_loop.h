@@ -2,6 +2,7 @@
 #define REACTOR_EVENT_LOOP_H
 
 #include <pthread.h>
+#include <assert.h>
 #include "dispatcher.h"
 #include "channel_map.h"
 
@@ -44,5 +45,8 @@ struct event_loop* init_self_event_loop(const char* threadName);
 
 // 初始化：主线程
 struct event_loop* init_event_loop();
+
+// 启动反应堆模型
+int start_event_loop(struct event_loop* eventLoop);
 
 #endif
