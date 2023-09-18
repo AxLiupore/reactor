@@ -122,11 +122,11 @@ int dispatch_select(struct event_loop* eventLoop, int timeout)
 			// 被激活了，去读取数据
 			if (FD_ISSET(i, &read_temp))
 			{
-
+				active_event(eventLoop, i, READ_EVENT); // i文件描述符发生了读事件
 			}
 			if (FD_ISSET(i, &write_temp))
 			{
-
+				active_event(eventLoop, i, WRITE_EVENT);
 			}
 		}
 	}

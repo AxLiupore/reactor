@@ -133,11 +133,11 @@ static int dispatch_epoll(struct event_loop* eventLoop, int timeout)
 			}
 			if (events & EPOLLIN)
 			{
-
+				active_event(eventLoop, fd, READ_EVENT);
 			}
 			if (events & EPOLLOUT)
 			{
-
+				active_event(eventLoop, fd, WRITE_EVENT);
 			}
 		}
 	}

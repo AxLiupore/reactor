@@ -42,3 +42,25 @@ int start_event_loop(struct event_loop* eventLoop)
 	}
 	return 0;
 }
+
+// 处理激活的文件描述符
+int active_event(struct event_loop* eventLoop, int fd, int event)
+{
+	if (fd < 0 || eventLoop == NULL)
+	{
+		return -1;
+	}
+	// 当读事件或写事件被触发之后，通过fd找到channel
+	struct channel* channel = eventLoop->channel_map->list[fd];
+	assert(channel->fd == fd);
+	// 执行回调函数
+	if (event & READ_EVENT && channel->readCallBack != NULL)
+	{
+		channel->readCallBack(channel->arg);
+	}
+	if (event & WRITE_EVENT &&  channel->writeCallBack != NULL)
+	{
+		channel->writeCallBack(channel->arg);
+	}
+	return 0;
+}

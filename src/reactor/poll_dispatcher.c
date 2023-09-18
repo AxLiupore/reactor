@@ -147,11 +147,11 @@ int dispatch_poll(struct event_loop* eventLoop, int timeout)
 			{
 				if (data->fds[i].revents & POLLIN)
 				{
-
+					active_event(eventLoop, data->fds[i].fd, READ_EVENT);
 				}
 				if (data->fds[i].events & POLLOUT)
 				{
-
+					active_event(eventLoop, data->fds[i].fd, WRITE_EVENT);
 				}
 			}
 		}
