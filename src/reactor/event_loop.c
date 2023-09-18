@@ -65,6 +65,7 @@ int start_event_loop(struct event_loop* eventLoop)
 	while (!eventLoop->state)
 	{
 		dispatcher->dispatch(eventLoop, 2); // 超时2s
+		process_task_event_loop(eventLoop);
 	}
 	return 0;
 }
@@ -91,7 +92,7 @@ int active_event(struct event_loop* eventLoop, int fd, int event)
 	return 0;
 }
 
-//添加任务到任务队列
+// 添加任务到任务队列
 int add_task_event_loop(struct event_loop* eventLoop, struct channel* channel, enum ELEMENT_TYPE type)
 {
 	// 加锁，保护共享资源
@@ -116,11 +117,42 @@ int add_task_event_loop(struct event_loop* eventLoop, struct channel* channel, e
 	if (eventLoop->thread_id == pthread_self())
 	{
 		// 当前子线程
+		process_task_event_loop(eventLoop);
 	}
 	else
 	{
 		// 主线程 -- 告诉子线程处理任务队列中的任务
 		write_local_message(eventLoop);
 	}
+	return 0;
+}
+
+// 处理任务队列中的任务
+int process_task_event_loop(struct event_loop* eventLoop)
+{
+	pthread_mutex_lock(&eventLoop->mutex);
+	// 取出头节点
+	struct channel_element* head = eventLoop->head;
+	while (head != NULL)
+	{
+		struct channel* channel = head->channel;
+		if (head->type == ADD)
+		{
+
+		}
+		else if (head->type == DELETE)
+		{
+
+		}
+		else if (head->type == MODIFY)
+		{
+
+		}
+		struct channel_element* temp = head;
+		head = head->next;
+		free(temp);
+	}
+	eventLoop->head = eventLoop->tail = NULL;
+	pthread_mutex_unlock(&eventLoop->mutex);
 	return 0;
 }

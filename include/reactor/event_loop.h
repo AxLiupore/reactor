@@ -57,4 +57,7 @@ int active_event(struct event_loop* eventLoop, int fd, int event);
 //添加任务到任务队列
 int add_task_event_loop(struct event_loop* eventLoop, struct channel* channel, enum ELEMENT_TYPE type);
 
+// 处理任务队列中的任务
+int process_task_event_loop(struct event_loop* eventLoop);
+
 #endif
