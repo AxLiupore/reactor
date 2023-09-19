@@ -4,7 +4,11 @@
 
 ## 概览
 
+这是项目各个模块所需要的技术和内容
+
 ![overview](https://github.com/AxLiupore/reactor/blob/master/images/overview.jpg)
+
+这个是这个项目的运行流程
 
 ## 反应堆模型
 

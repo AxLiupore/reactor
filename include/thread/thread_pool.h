@@ -17,4 +17,10 @@ struct thread_pool
 // 初始化线程池
 struct thread_pool* init_thread_pool(struct event_loop* mainLoop, int count);
 
+// 启动线程池
+void run_thread_pool(struct thread_pool* pool);
+
+// 取出线程池中的某个子线程的反应堆实例
+struct event_loop* take_worker_event_loop(struct thread_pool* pool);
+
 #endif
