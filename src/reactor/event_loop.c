@@ -136,6 +136,7 @@ int process_task_event_loop(struct event_loop* eventLoop)
 	while (head != NULL)
 	{
 		struct channel* channel = head->channel;
+		// 对channel进行相应的操作
 		if (head->type == ADD)
 		{
 
@@ -154,5 +155,37 @@ int process_task_event_loop(struct event_loop* eventLoop)
 	}
 	eventLoop->head = eventLoop->tail = NULL;
 	pthread_mutex_unlock(&eventLoop->mutex);
+	return 0;
+}
+
+// 将任务队列中的task中的channel添加、修改、删除->dispatcher
+int add_event_loop(struct event_loop* eventLoop, struct channel* channel)
+{
+	int fd = channel->fd;
+	struct channel_map* channelMap = eventLoop->channel_map;
+	if (fd >= channelMap->size)
+	{
+		// 没有足够的空间存储键值对：fd - channel ==> 扩容
+		if (!resize_memory_channel_map(channelMap, fd, sizeof(struct channel*)))
+		{
+			return -1;
+		}
+	}
+	// 找到fd对应的数组元素位置，并存储
+	if (channelMap->list[fd] == NULL)
+	{
+		channelMap->list[fd] = channel;
+		eventLoop->dispatcher->add(channel, eventLoop);
+	}
+	return 0;
+}
+
+int delete_event_loop(struct event_loop* eventLoop, struct channel* channel)
+{
+	return 0;
+}
+
+int modify_event_loop(struct event_loop* eventLoop, struct channel* channel)
+{
 	return 0;
 }
