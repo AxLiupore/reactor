@@ -18,4 +18,6 @@ add_executable(reactor main.cpp
         include/thread/thread_pool.h
         src/thread/worker_thread.c
         src/thread/thread_pool.c
+        include/io/buffer.h
+        src/io/buffer.c
 )
