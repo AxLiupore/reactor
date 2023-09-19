@@ -17,4 +17,5 @@ add_executable(reactor main.cpp
         include/thread/worker_thread.h
         include/thread/thread_pool.h
         src/thread/worker_thread.c
+        src/thread/thread_pool.c
 )

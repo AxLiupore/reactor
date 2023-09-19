@@ -91,13 +91,15 @@ I/O 多路复用的模型，这里有三种模型可以选择：epoll、poll、s
 
 #### Others
 
-还有一些其他数据：ThreadID、ThreadName、ThreadMutex、ThreadCondition
-- ThraedID：因为在当前的服务器里面有多个 EventLoop，每个 EventLoop 都属于一个线程，这个 ThreadID 就是记录那个子线程的线程 ID
-- ThreadName：子线程的名称
-- ThreadMutex：互斥锁，保护的是任务的队列，因为这个任务队列会被多个线程操作
-- ThreadCondition：条件变量
+还有一些其他数据：`ThreadID`、`ThreadName`、`ThreadMutex`、`ThreadCondition`
+- `ThraedID`：因为在当前的服务器里面有多个 EventLoop，每个 EventLoop 都属于一个线程，这个 ThreadID 就是记录那个子线程的线程 ID
+- `ThreadName`：子线程的名称
+- `ThreadMutex`：互斥锁，保护的是任务的队列，因为这个任务队列会被多个线程操作
+- `ThreadCondition`：条件变量
 
 ## 多线程
+
+![threadpool](https://github.com/AxLiupore/reactor/blob/master/images/threadpool.jpg)
 
 这里用到了 ThreadPool，先使用单个 Thread 的模型，再基于单个 Thread 的模型去编写一个 ThreadPool
 
@@ -108,6 +110,14 @@ I/O 多路复用的模型，这里有三种模型可以选择：epoll、poll、s
 在启动线程的时候，有可能这个函数执行完了，线程的回调函数还没有执行完，为了保证子线程被成功初始化，通过条件变量和互斥锁对主线程进行阻塞，知道子线程的 EventLoop 被初始完之后，才放行
 
 ### ThreadPool
+
+线程池，管理了一个 WorkThreads 数组，里面有若干个元素，每一个元素都有一个 WorkerThread 对象，初始化好了之后，每个 WorkerThread 里面都有一个 EventLoop 反应堆
+
+- `state`：线程池的状态，判断是否开启
+- `ThreadNum`：线程的数量
+- `index`：用于访问子线程
+- `struct EventLoop`：
+- `WorkerThread`：主线程和客户端建立了一个连接，连接建立之后，就需要和客户端进行通信，这个通信的流程需要交给子线程去处理，每个子线程里面都有一个 EventLoop 反应堆模型，需要把通信的文件描述符交给这个反应堆去管理
 
 ## I/O模型
 
