@@ -139,15 +139,15 @@ int process_task_event_loop(struct event_loop* eventLoop)
 		// 对channel进行相应的操作
 		if (head->type == ADD)
 		{
-
+			int ret = add_dispatcher_event_loop(eventLoop, channel);
 		}
 		else if (head->type == DELETE)
 		{
-
+			int ret = delete_dispatcher_event_loop(eventLoop, channel);
 		}
 		else if (head->type == MODIFY)
 		{
-
+			int ret = modify_dispatcher_event_loop(eventLoop, channel);
 		}
 		struct channel_element* temp = head;
 		head = head->next;
@@ -159,7 +159,7 @@ int process_task_event_loop(struct event_loop* eventLoop)
 }
 
 // 将任务队列中的task中的channel添加、修改、删除->dispatcher
-int add_event_loop(struct event_loop* eventLoop, struct channel* channel)
+int add_dispatcher_event_loop(struct event_loop* eventLoop, struct channel* channel)
 {
 	int fd = channel->fd;
 	struct channel_map* channelMap = eventLoop->channel_map;
@@ -180,12 +180,39 @@ int add_event_loop(struct event_loop* eventLoop, struct channel* channel)
 	return 0;
 }
 
-int delete_event_loop(struct event_loop* eventLoop, struct channel* channel)
+int delete_dispatcher_event_loop(struct event_loop* eventLoop, struct channel* channel)
 {
-	return 0;
+	int fd = channel->fd;
+	struct channel_map* channelMap = eventLoop->channel_map;
+	// 不在检测集合中
+	if (fd >= channelMap->size)
+	{
+		return -1;
+	}
+	int ret = eventLoop->dispatcher->remove(channel, eventLoop);
+	return ret;
 }
 
-int modify_event_loop(struct event_loop* eventLoop, struct channel* channel)
+int modify_dispatcher_event_loop(struct event_loop* eventLoop, struct channel* channel)
 {
+	int fd = channel->fd;
+	struct channel_map* channelMap = eventLoop->channel_map;
+	if (fd >= channelMap->size || channelMap->list[fd] == NULL)
+	{
+		return -1;
+	}
+	int ret = eventLoop->dispatcher->modify(channel, eventLoop);
+	return ret;
+}
+
+// 释放channel
+int destroy_channel(struct event_loop* eventLoop, struct channel* channel)
+{
+	// 删除channel和fd的对应关系
+	eventLoop->channel_map->list[channel->fd] = NULL;
+	// 关闭fd
+	close(channel->fd);
+	// 释放channel
+	free(channel);
 	return 0;
 }

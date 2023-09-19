@@ -61,11 +61,13 @@ int add_task_event_loop(struct event_loop* eventLoop, struct channel* channel, e
 int process_task_event_loop(struct event_loop* eventLoop);
 
 // 将任务队列中的task中的channel添加、修改、删除->dispatcher
-int add_event_loop(struct event_loop* eventLoop, struct channel* channel);
+int add_dispatcher_event_loop(struct event_loop* eventLoop, struct channel* channel);
 
-int delete_event_loop(struct event_loop* eventLoop, struct channel* channel);
+int delete_dispatcher_event_loop(struct event_loop* eventLoop, struct channel* channel);
 
-int modify_event_loop(struct event_loop* eventLoop, struct channel* channel);
+int modify_dispatcher_event_loop(struct event_loop* eventLoop, struct channel* channel);
 
+// 释放channel
+int destroy_channel(struct event_loop* eventLoop, struct channel* channel);
 
 #endif
