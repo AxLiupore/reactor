@@ -49,7 +49,7 @@ struct event_loop* init_self_event_loop(const char* threadName);
 struct event_loop* init_event_loop();
 
 // 启动反应堆模型
-int start_event_loop(struct event_loop* eventLoop);
+int run_event_loop(struct event_loop* eventLoop);
 
 // 处理激活的文件描述符
 int active_event(struct event_loop* eventLoop, int fd, int event);

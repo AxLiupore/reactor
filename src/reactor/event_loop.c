@@ -51,7 +51,7 @@ struct event_loop* init_self_event_loop(const char* threadName)
 }
 
 // 启动反应堆模型
-int start_event_loop(struct event_loop* eventLoop)
+int run_event_loop(struct event_loop* eventLoop)
 {
 	assert(eventLoop != NULL);
 	// 取出事件分发器和检测模型

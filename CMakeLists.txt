@@ -14,4 +14,7 @@ add_executable(reactor main.cpp
         src/reactor/epoll_dispatcher.c
         src/reactor/poll_dispatcher.c
         src/reactor/select_dispatcher.c
+        include/thread/worker_thread.h
+        include/thread/thread_pool.h
+        src/thread/worker_thread.c
 )
