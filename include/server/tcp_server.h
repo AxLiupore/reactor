@@ -26,5 +26,6 @@ struct tcp_server* init_tcp_server(unsigned short port, int threadNum);
 struct listener* init_listener(unsigned short port);
 
 // 启动服务器
+void run_tcp_server(struct tcp_server* tcpServer);
 
 #endif

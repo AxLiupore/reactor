@@ -50,3 +50,25 @@ struct listener* init_listener(unsigned short port)
 	listener->port = port;
 	return listener;
 }
+
+// 用于与客户端进行通信
+int acceptConnection(void* arg)
+{
+	struct tcp_server* tcpServer = (struct tcp_server*)arg;
+	// 和客户端进行连接
+	int cfd = accept(tcpServer->listener->lfd, NULL, NULL);
+	// 从线程池中取出一个子线程的反应堆实例，去处理这个cfd
+	struct event_loop* eventLoop = take_worker_event_loop(tcpServer->thread_pool);
+
+}
+
+void run_tcp_server(struct tcp_server* tcpServer)
+{
+	// 启动线程池
+	run_thread_pool(tcpServer->thread_pool);
+	// 添加检测的任务
+	struct channel* channel = init_channel(tcpServer->listener->lfd, READ_EVENT, acceptConnection, NULL, tcpServer);
+	add_task_event_loop(tcpServer->main_loop, channel, ADD);
+	// 启动反应堆模型
+	run_event_loop(tcpServer->main_loop);
+}

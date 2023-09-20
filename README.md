@@ -149,7 +149,9 @@ I/O 多路复用的模型，这里有三种模型可以选择：epoll、poll、s
 
 ### TcpServer
 
-在 TcpServer 服务器里面有一个 Listener，如果 TcpServer 想要工作，需要先创建一个监听的文件描述符
+在 TcpServer 服务器里面有一个 Listener，如果 TcpServer 想要工作，需要先创建一个监听的文件描述符，然后通过 socket 和客户端进行通信，这里面还有 ThreadPool、EventLoop，可以制定线程池的数量
+
+在启动 TcpServer 的时候，也要一并把 ThreadPool 启动起来，通过实例化一个 Channel，添加要检测的任务，要检测的任务就是用于监听的文件描述符，然后将这个用于监听的文件描述符添加到 EventLoop 中去一直处理，然后再启动反应堆模型
 
 ### HttpServer
 
