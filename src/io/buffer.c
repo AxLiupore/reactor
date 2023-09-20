@@ -70,3 +70,55 @@ int read_enable_size_buffer(struct buffer* buffer)
 {
 	return buffer->write_pos - buffer->read_pos;
 }
+
+// 写内存
+int append_data_buffer(struct buffer* buffer, const char* data, int size)
+{
+	if (buffer == NULL || data == NULL || data <= 0)
+	{
+		return -1;
+	}
+	// 扩容
+	extend_room_buffer(buffer, size);
+	// 数据拷贝
+	memcpy(buffer->data + buffer->write_pos, data, size);
+	buffer->write_pos += size;
+	return 0;
+}
+
+int append_string_buffer(struct buffer* buffer, const char* data)
+{
+	int size = strlen(data);
+	int ret = append_data_buffer(buffer, data, size);
+	return ret;
+}
+
+// 接受套接字的数据
+int read_socket_buffer(struct buffer* buffer, int fd)
+{
+	// read/recv/readv
+	struct iovec vec[2];
+	// 初始化数组元素
+	int writeable = write_enable_size_buffer(buffer);
+	vec[0].iov_base = buffer->data + buffer->write_pos;
+	vec[0].iov_len = writeable;
+	char* tempBuffer = (char*)malloc(40960);
+	vec[1].iov_base = buffer->data + buffer->write_pos;
+	vec[1].iov_len = 40960;
+	int result = readv(fd, vec, 2); // 接受到的字节
+	if (result == -1)
+	{
+		return -1;
+	}
+	else if (result <= writeable)
+	{
+		buffer->write_pos += result;
+	}
+	else
+	{
+		buffer->write_pos = buffer->capacity;
+		append_data_buffer(buffer, tempBuffer, result - writeable);
+	}
+	free(tempBuffer);
+	return result;
+}

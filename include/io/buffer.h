@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <sys/uio.h>
 
 struct buffer
 {
@@ -26,5 +27,13 @@ int write_enable_size_buffer(struct buffer* buffer);
 
 // 获取剩余的可读内存容量
 int read_enable_size_buffer(struct buffer* buffer);
+
+// 写内存
+int append_data_buffer(struct buffer* buffer, const char* data, int size);
+
+int append_string_buffer(struct buffer* buffer, const char* data);
+
+// 接受套接字的数据
+int read_socket_buffer(struct buffer* buffer, int fd);
 
 #endif
