@@ -131,7 +131,7 @@ I/O 多路复用的模型，这里有三种模型可以选择：epoll、poll、s
 
 ### Buffer
 
-![threadpool](https://github.com/AxLiupore/reactor/blob/master/images/buffer.jpg)
+![buffer](https://github.com/AxLiupore/reactor/blob/master/images/buffer.jpg)
 
 服务端和客户端都是通过这个 Buffer 进行数据的操作，当 Buffer 大小不足时，需要扩容，有以下三种情况：
 
@@ -141,11 +141,15 @@ I/O 多路复用的模型，这里有三种模型可以选择：epoll、poll、s
 
 ### TcpConnection
 
+![tcpconnection](https://github.com/AxLiupore/reactor/blob/master/images/tcpconnection.jpg)
+
 封装的是建立连接之后，等到的用于通信的文件描述符，基于这个文件描述符服务端可以发送数据，发送数据的时候可以写到一块内存中去，然后再从这个内存中的数据发送给客户端；接受数据，先将接受到的数据放到一块内存中
 
 ## 服务器
 
 ### TcpServer
+
+在 TcpServer 服务器里面有一个 Listener，如果 TcpServer 想要工作，需要先创建一个监听的文件描述符
 
 ### HttpServer
 

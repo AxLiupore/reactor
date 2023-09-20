@@ -20,4 +20,6 @@ add_executable(reactor main.cpp
         src/thread/thread_pool.c
         include/io/buffer.h
         src/io/buffer.c
+        include/server/tcp_server.h
+        src/server/tcp_server.c
 )
