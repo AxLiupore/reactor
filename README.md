@@ -133,7 +133,11 @@ I/O 多路复用的模型，这里有三种模型可以选择：epoll、poll、s
 
 ![threadpool](https://github.com/AxLiupore/reactor/blob/master/images/buffer.jpg)
 
-服务端和客户端都是通过这个 Buffer 进行数据的操作
+服务端和客户端都是通过这个 Buffer 进行数据的操作，当 Buffer 大小不足时，需要扩容，有以下三种情况：
+
+1. 内存够用 -- 不需要扩容
+2. 内存需要合并才够用 -- 不需要扩容
+3. 内存不够用 -- 需要扩容
 
 ### TcpConnection
 

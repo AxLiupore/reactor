@@ -18,4 +18,13 @@ struct buffer* init_buffer(int size);
 // 销毁内存的函数
 void destroy_buffer(struct buffer* buffer);
 
+// 扩容
+void extend_room_buffer(struct buffer* buffer, int size);
+
+// 获取剩余的可写内存容量
+int write_enable_size_buffer(struct buffer* buffer);
+
+// 获取剩余的可读内存容量
+int read_enable_size_buffer(struct buffer* buffer);
+
 #endif
