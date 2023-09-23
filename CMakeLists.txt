@@ -22,4 +22,6 @@ add_executable(reactor main.cpp
         src/io/buffer.c
         include/server/tcp_server.h
         src/server/tcp_server.c
+        include/server/tcp_connection.h
+        src/server/tcp_connection.c
 )
